@@ -35,12 +35,17 @@ async function loadUserstyles() {
 
 	try {
 		const styles = await ipcRenderer.invoke('get-userstyles')
+		const disabledList = config.disabled_userstyles || []
 
 		styles.forEach(({ filename, css }) => {
-			injectCSS(filename, css)
+			if (!disabledList.includes(filename)) {
+				injectCSS(filename, css)
+			} else {
+				console.log(`[Userstyles] Skipping disabled: ${filename}`)
+			}
 		})
 
-		console.log(`[Userstyles] Loaded ${styles.length} stylesheets`)
+		console.log(`[Userstyles] Loaded ${styles.length - disabledList.length} of ${styles.length} stylesheets`)
 	} catch (error) {
 		console.error('[Userstyles] Failed to load styles:', error)
 	}
@@ -81,6 +86,29 @@ module.exports = async () => {
 	ipcRenderer.on('userstyle-removed', (event, { filename }) => {
 		const id = getId(filename)
 		removeCSS(id, true)
+	})
+
+	window.addEventListener('vt-userstyle-toggle', async (event) => {
+		const { filename, enabled } = event.detail
+		if (!config.userstyles) return // Global userstyles must be enabled
+		
+		console.log(`[Userstyles] Toggle ${filename}: ${enabled ? 'enabled' : 'disabled'}`)
+		
+		if (enabled) {
+			// Re-inject the style
+			try {
+				const styles = await ipcRenderer.invoke('get-userstyles')
+				const style = styles.find(s => s.filename === filename)
+				if (style) {
+					injectCSS(style.filename, style.css)
+				}
+			} catch (error) {
+				console.error(`[Userstyles] Failed to load ${filename}:`, error)
+			}
+		} else {
+			// Remove the style
+			removeCSS(filename, true)
+		}
 	})
 
 	console.log('[Userstyles] Initialized')

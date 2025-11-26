@@ -189,6 +189,33 @@ module.exports = async () => {
                 ]
             }
 
+            // VacuumTube Settings overlay entry point
+            json.items.unshift(
+                {
+                    settingCategoryCollectionRenderer: {
+                        categoryId: 'SETTINGS_CAT_VACUUMTUBE_OVERLAY',
+                        focused: false,
+                        items: [
+                            createSettingButtonRenderer(
+                                locale.settings_overlay.button_label,
+                                locale.settings_overlay.description,
+                                () => {
+                                    if (window.vtOpenSettingsOverlay) {
+                                        window.vtOpenSettingsOverlay()
+                                    }
+                                }
+                            )
+                        ],
+                        title: {
+                            runs: [
+                                { text: locale.settings_overlay.title }
+                            ]
+                        }
+                    }
+                }
+            )
+
+            // Existing VacuumTube settings (legacy, will be migrated)
             json.items.unshift(
                 {
                     settingCategoryCollectionRenderer: {

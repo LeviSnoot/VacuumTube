@@ -17,6 +17,7 @@ module.exports = async () => {
         7:  114, //right trigger -> f3 (seek forwards)
         8:  13,  //select -> enter
         9:  13,  //start -> enter
+        11: 'vt-settings', // R3 -> VacuumTube settings overlay (special handler)
         12: 38,  //dpad up -> arrow key up
         13: 40,  //dpad down -> arrow key down
         14: 37,  //dpad left -> arrow key left
@@ -145,6 +146,14 @@ module.exports = async () => {
     function simulateKeyDown(keyCode) {
         if (!focused || !config.controller_support) return;
 
+        // VacuumTube settings
+        if (keyCode === 'vt-settings') {
+            if (window.vtToggleSettingsOverlay) {
+                window.vtToggleSettingsOverlay()
+            }
+            return;
+        }
+
         let event = new Event('keydown')
         event.keyCode = keyCode;
         document.dispatchEvent(event)
@@ -152,6 +161,11 @@ module.exports = async () => {
 
     function simulateKeyUp(keyCode) {
         if (!focused || !config.controller_support) return;
+
+        // VacuumTube settings - no keyup needed
+        if (keyCode === 'vt-settings') {
+            return;
+        }
 
         let event = new Event('keyup')
         event.keyCode = keyCode;

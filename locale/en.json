@@ -4,6 +4,18 @@
         "dislikes": "Dislikes",
         "steam_controller_notice": "External controller isn't detected? Try the steamdeck-input-disabler plugin from Decky."
     },
+    "settings_overlay": {
+        "title": "VacuumTube Settings",
+        "description": "Opens the VacuumTube settings overlay with additional configuration options",
+        "button_label": "Open VacuumTube Settings",
+        "navigation_hint": "Use arrow keys to navigate",
+        "userstyles": {
+        "empty": "No userstyles found",
+        "open_folder": "Open Userstyles Folder",
+        "description": "Place .css files in the userstyles folder to customize the interface. Changes are applied automatically.",
+        "enable_all": "Enable Userstyles"
+        }
+    },
     "settings": {
         "ad_block": {
             "title": "Ad Block",
